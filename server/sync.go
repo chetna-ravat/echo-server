@@ -1,9 +1,12 @@
 package server
 
 import (
-	"fmt"
 	"io"
+	"errors"
+	"strconv"
 	"net"
+	"log"
+	"syscall"
 
 	"github.com/chetna-ravat/echo-server/config"
 )
@@ -28,9 +31,9 @@ func respond(msg string, c net.Conn) error {
 func RunSyncServer() {
 	log.Println("Starting a synchronous TCP server on", config.Host, config.Port)
 
-	con_clients := 0
+	var con_clients int = 0
 	// start listening to the configured host and port
-	listner, err := net.Listen("tcp", fmt.Sprintln(config.Host, ":", config.Port))
+	listner, err := net.Listen("tcp", config.Host+":"+strconv.Itoa(config.Port))
 	if err != nil {
 		panic(err)
 	}
@@ -43,7 +46,7 @@ func RunSyncServer() {
 		}
 
 		// Bump up the client connection count
-		con_client += 1
+		con_clients += 1
 		log.Println("Client connected with address: ", connection.RemoteAddr(), "Total connected client: ", con_clients)
 
 		for {
@@ -54,7 +57,7 @@ func RunSyncServer() {
 				connection.Close()
 				con_clients -= 1
 				log.Println("Client disconnected", connection.RemoteAddr(), "Total connected client: ", con_clients)
-				if err == io.EOF {
+				if errors.Is(err, syscall.ECONNRESET) || errors.Is(err, io.EOF) {
 					break
 				}
 				log.Println("err", err)

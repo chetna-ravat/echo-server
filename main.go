@@ -11,7 +11,7 @@ import (
 func setupFlag() {
 
 	flag.StringVar(&config.Host, "host", "0.0.0.0", "host ip address of the echo server")
-	flag.IntVar(&config.Port, "port", 5200, "port on which echo server is listening")
+	flag.IntVar(&config.Port, "port", 7878, "port on which echo server is listening")
 	flag.Parse()
 }
 
