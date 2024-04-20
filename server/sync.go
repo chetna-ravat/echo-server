@@ -5,7 +5,7 @@ import (
 	"io"
 	"net"
 
-	"github.com/chetna-ravat/config"
+	"github.com/chetna-ravat/echo-server/config"
 )
 
 func readMessage(c net.Conn) (string, error) {
